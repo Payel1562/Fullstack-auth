@@ -1,0 +1,98 @@
+# # version: "3.8"
+
+# services:
+#   db:
+#     image: postgres:14
+#     container_name: postgres_db
+#     restart: always
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: anshuman.01
+#       POSTGRES_DB: file_manager
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#       - ./Postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+#     ports:
+#       - "5433:5432"  # Changed host port to avoid conflict with system Postgres
+
+#   backend:
+#     build: ./Backend
+#     container_name: file_backend
+#     restart: always
+#     depends_on:
+#       - db
+#     environment:
+#       - DB_HOST=db
+#       - DB_USER=postgres
+#       - DB_PASSWORD=anshuman.01
+#       - DB_NAME=file_manager
+#       - PORT=8080
+#       - FRONTEND_URL=http://server_ip:5173
+#     ports:
+#       - "8080:8080"
+#     volumes:
+#       - ./Backend/uploads:/app/uploads
+
+#   frontend:
+#     build:
+#       context: ./Ashyft
+#       dockerfile: Dockerfile
+#     container_name: file_frontend
+#     restart: always
+#     depends_on:
+#       - backend
+#     ports:
+#       - "5173:80"  # Nginx exposes app on container port 80
+
+# volumes:
+#   pgdata:
+version: "3.8"
+
+services:
+  db:
+    image: postgres:14
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: ayush
+      POSTGRES_PASSWORD: ayush
+      POSTGRES_DB: ayush
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./Postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432" # Host port 5433 to avoid conflict with local Postgres
+
+  backend:
+    build: ./Backend
+    container_name: file_backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=ayush
+      - DB_PASSWORD=ayush
+      - DB_NAME=ayush
+      - PORT=8080
+      - FRONTEND_URL=http://localhost:5173
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Backend/uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./Ashyft
+      dockerfile: Dockerfile
+    container_name: file_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:80" # Use 5173 if using Vite dev server
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8080
+
+volumes:
+  pgdata: 
